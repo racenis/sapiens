@@ -8,8 +8,7 @@ class FieldDecimal implements FieldInterface {
 	} 
 	
 	public boolean IsValid(char character) {
-		return (character >= '0' && character <= '9')
-			|| (character >= 'A' && character <= 'F');
+		return (character >= '0' && character <= '9');
 	}
 	
 	public boolean Contains(char character) {
@@ -49,6 +48,13 @@ class FieldDecimal implements FieldInterface {
 	
 	public int GetSize() {
 		return size;
+	}
+	
+	public String toString() {
+		String s = "";
+		for (char c : characters) s += c;
+		
+		return s;
 	}
 	
 	private int size;

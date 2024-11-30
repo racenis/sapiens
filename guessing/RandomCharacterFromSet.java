@@ -9,7 +9,27 @@ class RandomCharacterFromSet implements RandomCharacterGeneratorInterface {
 	}
 	
 	public char GetCharacter() {
-		return character_set[generator.nextInt(character_set.length)];
+		assert(character_set.length > 0);
+		
+		int index = generator.nextInt(character_set.length);
+		char character = character_set[index];
+		
+		if (UseOnlyOnce()) {
+			char[] new_set = new char[character_set.length - 1];
+			
+			int offset = 0;
+			for (int i = 0; i < character_set.length - 1; i++) {
+				new_set[i - offset] = character_set[i];
+				
+				if (i == index) offset = 1;
+			}
+		}
+		
+		return character;
+	}
+	
+	public boolean UseOnlyOnce() {
+		return true;
 	}
 	
 	protected Random generator;

@@ -5,9 +5,9 @@ class UIFormatterPlainCLI implements UIFormatterInterface {
 	public char[] GetInput(String prompt) {
 		System.out.println(prompt);
 		
-		Scanner scanner = new Scanner(System.in);
+		
 		String line = scanner.nextLine();
-		scanner.close();
+		//scanner.close();
 		
 		return line.toCharArray();
 	}
@@ -15,5 +15,7 @@ class UIFormatterPlainCLI implements UIFormatterInterface {
 	public void Display(String message) {
 		System.out.println(message);
 	}
+	
+	static Scanner scanner = new Scanner(System.in);
 	
 };
