@@ -6,8 +6,7 @@ The example lists costs in dollar signs, which could be USD, CAD, AUD, etc.
 so idk. Maybe we will accept other currencies in the future? What kinds of
 denomimnations will be supported?
 
-For now let's just go with a couple of different dollar types and also the euros,
-and a single "crypto" currency (using crypto currencies is supposed to attract investors).
+For now let's just go with a couple of different dollar types and also the euros.
 
 Since the requirements , most used one is the United States dollar, so we will 
 go with that as a default.
@@ -17,7 +16,7 @@ maybe add std library containers (didn;t feel like using it toiday_)
 
 */
 
-// TODO: add ethereum coin
+// TODO: implement AUD, CAD, NZL, ZWL -> USD conversions
 
 #include <cstdio>
 #include <cstdlib>
@@ -524,16 +523,13 @@ int main(int argc, const char** argv) {
 		printf("Usage: responsibility sum\n");
 		printf("\tsum is the sum which will be checked for approval\n");
 		printf("Accepted currencies:\n");
-		printf("\t$, eur, E, Eth\n");
+		printf("\t$, USD, AUD, CAD, NZL, EUR, SWL, Z$, A$\n");
 		printf("Example:\n");
 		printf("\tresponsibility 400$");
 	}
 	
 	Currency* cost = CurrencyFactory::ConvertToDefaultCurrency(CurrencyFactory::CreateCurrencyHeuristic(argv[1]));
-	
-	
-	printf("currency: %i\n", ((DollarCurrency*)cost)->GetDollars());
-	
+
 	Stakeholder* ceo = new CEO;
 	Stakeholder* division_director = StakeholderFactory::DivisionDirector(ceo);
 	Stakeholder* subdivision_manager = StakeholderFactory::SubdivisionManager(division_director);
