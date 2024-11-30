@@ -24,8 +24,12 @@ maybe add std library containers (didn;t feel like using it toiday_)
 #include <cassert>
 #include <cstdint>
 #include <cstring>
+#include <cctype>
 #include <exception>
 
+/// For currency conversion mishaps.
+/// This error is supposed to be thrown when a currency conversion is unable to
+/// be peformed, i.e. if there is no known exchange rate between currencies.
 class InvalidCurrencyConversion : public std::exception {
 public:
 	const char* what() {
@@ -33,7 +37,8 @@ public:
 	}
 };
 
-
+/// For currency comparison mishaps.
+/// Sometimes currencies can't be compared. This is for those times.
 class InvalidCurrencyComparison : public std::exception {
 public:
 	const char* what() {
@@ -41,6 +46,9 @@ public:
 	}
 };
 
+/// For currency parsing errors.
+/// This is meant to be thrown when a currency's type can't be determined from
+/// its string representation.
 class CurrencyHeuristicFailure : public std::exception {
 public:
 	const char* what() {
@@ -48,10 +56,16 @@ public:
 	}
 };
 
-
-// we'll need this to test the program
+/// Interface for generic CLI printers.
+/// To implement this interface, one must simply subclass this class and
+/// implement the abstract Print(const char*) method.
 class CLITextPrinterInterface {
 public:
+	
+	/// Prints a line of text to commandline.
+	/// Takes in a null-terminated string and prints it, or something like that.
+	/// The lines don't need to have newline characters at the end, they will be
+	/// provided free of charge.
 	virtual void Print(const char*) = 0;
 	// TODO: investigate whether we need a Print(wchar_t*) function
 	//       - maybe somone wants to print currencies in UTF-16
@@ -60,6 +74,8 @@ public:
 	virtual ~CLITextPrinterInterface() = default;
 };
 
+/// Standard output CLI printer.
+/// This printer will print each line to standard output.
 class CLITextPrinter : public CLITextPrinterInterface {
 public:
 	void Print(const char* text) override {
@@ -69,6 +85,9 @@ public:
 	virtual ~CLITextPrinter() = default;
 };
 
+/// CLI printer for testing.
+/// This printer will print each line to standard output, and in addition to it,
+/// it will store each line. Might be useful for testing.
 class CLITextPrinterForTesting : public CLITextPrinterInterface {
 public:
 	CLITextPrinterForTesting(size_t size) {
@@ -116,9 +135,10 @@ private:
 	char** buffer = nullptr;
 };
 
-
+/// Currency base class.
 class Currency {
-	virtual size_t PrintToString(char* str, size_t str_len);
+public:
+	//virtual size_t PrintToString(char* str, size_t str_len);
 	virtual bool operator<(const Currency* other) = 0;
 };
 
@@ -153,7 +173,7 @@ private:
 
 class DollarCurrency : public Currency {
 public:
-	DollarCurrency(DollarCurrencyType, uint32_t dollars, uint32_t cents) {
+	DollarCurrency(DollarCurrencyType type, uint32_t dollars, uint32_t cents) {
 		this->type = type;
 		this->dollars = dollars;
 		this->cents = cents;
@@ -171,6 +191,8 @@ public:
 	
 	virtual bool operator<(const Currency* other) override {
 		const DollarCurrency* other_dollar = dynamic_cast<const DollarCurrency*>(other);
+		
+		printf("comparin!\n");
 		
 		if (!other_dollar) {
 			throw InvalidCurrencyComparison();
@@ -205,6 +227,7 @@ private:
 			case CURRENCY_DOLLAR_NEW_ZEALAND:   return 179;
 			case CURRENCY_DOLLAR_ZIMBABWE:      return 33953;
 		}
+		abort();
 	}
 	
 	static DollarCurrencyType default_currency;
@@ -215,7 +238,123 @@ public:
 	}
 
 	static Currency* CreateCurrencyHeuristic(const char* str) {
-		throw CurrencyHeuristicFailure();
+		if (strlen(str) > 100) {
+			printf("NOO! TOO LONG!! \n");
+			throw CurrencyHeuristicFailure();
+		}
+		
+		// TODO: make code nicer
+		// - i.e. !isalpha(*ptr) && *ptr != '$' could be into a function
+		
+		// TODO: make better error messages
+		// - exceptions don't have custom messages. could have messages.
+		
+		char whole_buffer[100];
+		char fraction_buffer[100];
+		char currency_buffer[100];
+		
+		char* whole = whole_buffer;
+		char* fraction = fraction_buffer;
+		char* currency = currency_buffer;
+		
+		const char* ptr = str;
+		
+		// we assume that the string is formatted like this:
+		// 	[whole].[fraction][currency]
+		// or like this:
+		// 	[whole][currency]
+		// the seperator can also be a comma.
+		
+		// we will just step through the string, character by character, and we
+		// will try to parse it like that.
+		
+		for (; *ptr != '\0'; ptr++) {
+
+			// whole part is finished
+			if (*ptr == ',' || *ptr == '.' || isalpha(*ptr) || *ptr == '$') break;
+			
+			// we are expecting only digits in this part...
+			if (!isdigit(*ptr)) throw CurrencyHeuristicFailure(); 
+			
+			// copy in this character
+			*whole++ = *ptr;
+
+		}
+
+		if (!isalpha(*ptr) && *ptr != '$') {
+			
+			// step over comma or period
+			ptr++;
+			
+			// copy some more digits
+			for (; *ptr != '\0'; ptr++) {
+
+				// fraction part is finished
+				if (isalpha(*ptr) || *ptr == '$') break;
+				
+				// we are expecting only digits in this part...
+				if (!isdigit(*ptr)) throw CurrencyHeuristicFailure(); 
+				
+				// copy in this character
+				*fraction++ = *ptr;
+
+			}
+		}
+		
+		// time to copy in the currency
+		for (; *ptr != '\0'; ptr++) {
+			if (!isalpha(*ptr) && *ptr != '$') throw CurrencyHeuristicFailure();
+			
+			*currency++ = *ptr;
+		}
+		
+		*whole = '\0';
+		*fraction = '\0';
+		*currency = '\0';
+		
+		// no digits parsed
+		if (whole == whole_buffer) {
+			throw CurrencyHeuristicFailure();
+		}
+		
+		// no currency symbols parsed
+		if (currency == currency_buffer) {
+			throw CurrencyHeuristicFailure();
+		}
+		
+		// convert currency symbols to lowercase, for comparison
+		for (currency = currency_buffer; *currency != '\0'; currency++) {
+			*currency = toupper(*currency);
+		}
+		
+		// convert parsed values to ints
+		uint32_t whole_int = atoi(whole_buffer);
+		uint32_t fraction_int = fraction == fraction_buffer ? 0 : atoi(fraction_buffer);
+		
+		// check if euro
+		if (strcmp(currency_buffer, "EUR") == 0) {
+			return new Euro(whole_int, fraction_int);
+		}
+		
+		DollarCurrencyType dollar_type;
+		
+		// otherwise assume that dollars
+		if (strcmp(currency_buffer, "$") == 0 or strcmp(currency_buffer, "USD") == 0) {
+			dollar_type = CURRENCY_DOLLAR_UNITED_STATES;
+		} else if (strcmp(currency_buffer, "A$") == 0 or strcmp(currency_buffer, "AUD") == 0) {
+			dollar_type = CURRENCY_DOLLAR_AUSTRALIA;
+		} else if (strcmp(currency_buffer, "CAD") == 0) {
+			dollar_type = CURRENCY_DOLLAR_CANADA;
+		} else if (strcmp(currency_buffer, "NZD") == 0) {
+			dollar_type = CURRENCY_DOLLAR_NEW_ZEALAND;
+		} else if (strcmp(currency_buffer, "Z$") == 0 or strcmp(currency_buffer, "ZWL") == 0) {
+			dollar_type = CURRENCY_DOLLAR_ZIMBABWE;
+		} else {
+			// unrecognized currency!
+			throw CurrencyHeuristicFailure();
+		}
+		
+		return new DollarCurrency(dollar_type, whole_int, fraction_int);
 	}
 	
 	static DollarCurrency* ConvertEuroToDollar(Euro* euro,
@@ -270,37 +409,51 @@ struct StakeholderApproval {
 	}
 };
 
+/// Base stakeholder class.
+/// Stakeholders approve costs. That's all they do. They also respond if called,
+/// see the GetName() method.
 class Stakeholder {
 public:
-	virtual StakeholderApproval TryGetApproved(Currency* sum) = 0;
+	/// Asks the Stakeholder to approve the cost.
+	/// @note See StakeholderApproval struct.
+	virtual StakeholderApproval TryGetApproved(Currency* cost) = 0;
+	
+	/// Returns the name of the Stakeholder.
 	virtual const char* GetName() = 0;
+	
 	virtual ~Stakeholder() = default;
 };
 
 /// Generic Stakeholder that doesn't really do anything special in particular.
 /// You could hang a decorator on this to get new behaviors, but I don't know if
 /// it will be needed.
-/// @param name 	This name will be printed to console. Tbe string will be copied.
-/// @param sum 		Ammount of currency which the stakeholder will approve.
-/// @param delegate	An optional delegate. See Stakeholder.
+
 class GenericStakeholder : public Stakeholder {
 public:
-	GenericStakeholder(const char* name, Currency* sum, Stakeholder* delegate = nullptr) {
+
+	/// Creates a new generic stakeholder.
+	/// @param name 	This name will be printed to console. Tbe string will be copied.
+	/// @param cost 	Ammount of currency which the stakeholder will approve.
+	/// @param delegate	An optional delegate. See Stakeholder.
+	GenericStakeholder(const char* name, Currency* cost, Stakeholder* delegate = nullptr) {
 		this->name = new char[strlen(name) + 1];
 		strcpy(this->name, name);
-		this->sum = sum;
+		this->cost = cost;
 		this->delegate = delegate;
 	}
 	
-	StakeholderApproval TryGetApproved(Currency* sum) override {
-		if (sum < this->sum) {
+	/// Checks for approval.
+	/// If cost
+	StakeholderApproval TryGetApproved(Currency* cost) override {
+		
+		if (*cost < this->cost) {
 			return StakeholderApproval::Approve(this);
 		}
 		
 		if (delegate) {
-			delegate->TryGetApproved(sum);
+			return delegate->TryGetApproved(cost);
 		}
-		
+
 		return StakeholderApproval::Deny();
 	}
 	
@@ -313,7 +466,7 @@ public:
 	}
 private:
 	char* name = nullptr;
-	Currency* sum = nullptr;
+	Currency* cost = nullptr;
 	Stakeholder* delegate = nullptr;
 };
 
@@ -321,53 +474,44 @@ private:
 /// CEO gets their own class, since CEOs are very important.
 class CEO : public Stakeholder {
 public:
-	CEO(Stakeholder* delegate = nullptr) {
-		this->delegate = delegate;
-	}
-	
+
 	const char* GetName() override {
 		return "CEO";
 	}
 	
-	StakeholderApproval TryGetApproved(Currency* sum) override {
+	StakeholderApproval TryGetApproved(Currency* cost) override {
 		DollarCurrency approval_sum(CURRENCY_DOLLAR_UNITED_STATES, 100'000, 0);
 
-		if (sum < static_cast<Currency*>(&approval_sum)) {
+		if (*cost < static_cast<Currency*>(&approval_sum)) {
 			return StakeholderApproval::Approve(this);
-		}
-		
-		if (delegate) {
-			delegate->TryGetApproved(sum);
 		}
 		
 		return StakeholderApproval::Deny();
 	}
-	
-private:
-	Stakeholder* delegate = nullptr;
+
 };
 
 class StakeholderFactory {
 public:
-	Stakeholder* DivisionDirector(Stakeholder* delegate = nullptr) {
+	static Stakeholder* DivisionDirector(Stakeholder* delegate = nullptr) {
 		return new GenericStakeholder("Division Director",
 	                                  new DollarCurrency(CURRENCY_DOLLAR_UNITED_STATES, 20'000, 0),
 									  delegate);
 	}
 	
-	Stakeholder* SubdivisionManager(Stakeholder* delegate = nullptr) {
+	static Stakeholder* SubdivisionManager(Stakeholder* delegate = nullptr) {
 		return new GenericStakeholder("Subdivision Manager",
 	                                  new DollarCurrency(CURRENCY_DOLLAR_UNITED_STATES, 5'000, 0),
 									  delegate);
 	}
 	
-	Stakeholder* ProgramManager(Stakeholder* delegate = nullptr) {
+	static Stakeholder* ProgramManager(Stakeholder* delegate = nullptr) {
 		return new GenericStakeholder("Program Manager",
 	                                  new DollarCurrency(CURRENCY_DOLLAR_UNITED_STATES, 2'000, 0),
 									  delegate);
 	}
 	
-	Stakeholder* ProjectManager(Stakeholder* delegate = nullptr) {
+	static Stakeholder* ProjectManager(Stakeholder* delegate = nullptr) {
 		return new GenericStakeholder("Project Manager",
 	                                  new DollarCurrency(CURRENCY_DOLLAR_UNITED_STATES, 500, 0),
 									  delegate);
@@ -385,25 +529,28 @@ int main(int argc, const char** argv) {
 		printf("\tresponsibility 400$");
 	}
 	
-	Currency* check_currency = CurrencyFactory::CreateCurrencyHeuristic(argv[1]);
+	Currency* cost = CurrencyFactory::ConvertToDefaultCurrency(CurrencyFactory::CreateCurrencyHeuristic(argv[1]));
 	
+	
+	printf("currency: %i\n", ((DollarCurrency*)cost)->GetDollars());
 	
 	Stakeholder* ceo = new CEO;
-	Stakeholder* d_director = ;
+	Stakeholder* division_director = StakeholderFactory::DivisionDirector(ceo);
+	Stakeholder* subdivision_manager = StakeholderFactory::SubdivisionManager(division_director);
+	Stakeholder* program_manager = StakeholderFactory::ProgramManager(subdivision_manager);
+	Stakeholder* project_manager = StakeholderFactory::ProjectManager(program_manager);
 	
+	StakeholderApproval approval = project_manager->TryGetApproved(cost);
+	
+	
+	CLITextPrinterInterface* text_printer = new CLITextPrinter;
+	
+	char output_buffer[100];
+	if (approval.approved) {
+		printf("%s\n", approval.approver->GetName());
+	} else {
+		printf("Not approved.\n");
+	}
 	
 	return 0;
 }
-
-
-/*
-
-struct CurrencyAmmount {
- CurrencyType;
- int b
-};
-
-StakeholderApproval
-
-
-Stakeholder*/
