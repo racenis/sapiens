@@ -42,7 +42,7 @@ class UIInterface {
 		switch (text) {
 			case HELP_MESSAGE: 		return "Here's help: http://google.com";
 			case PROMPT_SOLUTION:	return "Enter solution: ";
-			case PROGRESS_REPORT:	return "Waow! Current guess: %0/%1";
+			case PROGRESS_REPORT:	return "Waow! Current guess:\t%0/%1";
 			case SOLUTION_CORRECT:	return "CONGRATULATION! YOU ARE WINNER!";
 			case ABSOLUTE_FAILURE:	return "YOUR LOSER!";
 			case INVALID_SYMBOLS:	return "You used invalid symbols. Ungood.";

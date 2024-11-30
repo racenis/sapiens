@@ -1,5 +1,14 @@
-default: MainClass.class FieldDecimal.class RandomCharacterFromSet.class RandomCharacterRandom.class UIInterface.class UIAltInterface.class UIBadInterface.class UIFormatterFancyCLI.class UIFormatterPlainCLI.class UIFormatterBadCLI.class Solution.class
+run: compile
 	java MainClass
+
+good: compile
+	java MainClass -good -hex	
+
+fancy: compile
+	java MainClass -good -hex -fancy
+
+compile: MainClass.class FieldDecimal.class RandomCharacterFromSet.class RandomCharacterRandom.class UIInterface.class UIAltInterface.class UIBadInterface.class UIFormatterFancyCLI.class UIFormatterPlainCLI.class UIFormatterBadCLI.class Solution.class
+	
 
 FieldDecimal.class: FieldDecimal.java
 	javac FieldDecimal.java

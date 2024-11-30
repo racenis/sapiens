@@ -1,3 +1,40 @@
+/*
+
++------------------------------------------------------------------------------+
+|                                                                              |
+|                                    ideas                                     |
+|                                                                              |
++------------------------------------------------------------------------------+
+
+Use a more functional programming style
+- code very imperative style for implementing algorithms
+- more functional style could be more readable
+
+Implement other counting systems
+- currently we only have decimal and hexadecimal
+
+Add dictionary generator
+- instead of picking a random character, it would instead pick a random word
+  from a provided dictionary and then sequentially give otu letters from it
+- we could basically make a wordle
+
+Replace CLI with GUI
+- java already has swing UI, which might be useful
+- UI class was designed with a simple future GUI in mind
+
+Replace CLI UI with networked UI
+- constructor opens socket
+- provide REST API through socket
+- structure inputs and outputs as JSON
+- would allow commercializing as Worlde As A Service (WAAS)
+
+Characters as a class
+- characters are currently using builtin char type
+- maybe we want pictograms? non-unicode characters?
+- put them in class with a isEqual() method
+
+
+*/
 
 class MainClass {
 
@@ -11,11 +48,12 @@ class MainClass {
 	
 	private static RandomCharacterGeneratorInterface MakeFieldGenerator(boolean hexadecimal) {
 		if (hexadecimal) {
-			char[] characters = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-			return new RandomCharacterFromSet(characters);
-		} else {
 			char[] characters = {'0', '1', '2', '3', '4', '5', '6', '7',
 			                     '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+			return new RandomCharacterFromSet(characters);
+		} else {
+			char[] characters = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+			
 			return new RandomCharacterFromSet(characters);
 		}
 	}

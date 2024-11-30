@@ -5,11 +5,11 @@ class UIFormatterPlainCLI implements UIFormatterInterface {
 	public char[] GetInput(String prompt) {
 		System.out.println(prompt);
 		
-		
 		String line = scanner.nextLine();
-		//scanner.close();
 		
-		return line.toCharArray();
+		
+		
+		return line.toUpperCase().toCharArray();
 	}
 	
 	public void Display(String message) {

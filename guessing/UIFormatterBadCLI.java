@@ -5,7 +5,7 @@ class UIFormatterBadCLI implements UIFormatterInterface {
 	public char[] GetInput(String prompt) {
 		System.out.print(prompt);
 		
-		String line = scanner.nextLine();
+		String line = scanner.next();
 
 		return line.toCharArray();
 	}
