@@ -1,17 +1,23 @@
 run: compile
-	java MainClass
+	java -ea MainClass
 
 good: compile
-	java MainClass -good -hex	
+	java -ea MainClass -good -hex	
 
 fancy: compile
-	java MainClass -good -hex -fancy
+	java -ea MainClass -good -hex -fancy
 
-compile: MainClass.class FieldDecimal.class RandomCharacterFromSet.class RandomCharacterRandom.class UIInterface.class UIAltInterface.class UIBadInterface.class UIFormatterFancyCLI.class UIFormatterPlainCLI.class UIFormatterBadCLI.class Solution.class
+compile:	MainClass.class FieldDecimal.class FieldHexadecimal.java \
+			RandomCharacterFromSet.class RandomCharacterRandom.class \
+			UIInterface.class UIAltInterface.class UIBadInterface.class \
+			UIFormatterFancyCLI.class UIFormatterPlainCLI.class \
+			UIFormatterBadCLI.class Solution.class
 	
 
 FieldDecimal.class: FieldDecimal.java
 	javac FieldDecimal.java
+FieldHexadecimal.class: FieldHexadecimal.java
+	javac FieldHexadecimal.java
 	
 RandomCharacterFromSet.class: RandomCharacterFromSet.java
 	javac RandomCharacterFromSet.java
@@ -38,3 +44,20 @@ Solution.class: Solution.java
 
 MainClass.class: MainClass.java
 	javac MainClass.java
+	
+clean:
+	del MainClass.class
+	del FieldDecimal.class
+	del FieldHexadecimal.class
+	del FieldInterface.class
+	del RandomCharacterGeneratorInterface.class
+	del RandomCharacterFromSet.class
+	del RandomCharacterRandom.class
+	del UIInterface.class
+	del UIAltInterface.class
+	del UIBadInterface.class
+	del UIFormatterInterface.class
+	del UIFormatterFancyCLI.class
+	del UIFormatterPlainCLI.class
+	del UIFormatterBadCLI.class
+	del Solution.class

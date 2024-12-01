@@ -11,7 +11,6 @@
 // Maybe allowing the user to draw characters like in mspaint? The compare would
 // return true if two drawn characters reach a similarity threshold.
 
-
 interface FieldInterface {
 	
 	/// Checks whether a character can be inserted into the field.

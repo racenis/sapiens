@@ -1,3 +1,5 @@
+
+/// Field, but supports hexadecimal numbers.
 class FieldHexadecimal extends FieldDecimal {
 	public FieldHexadecimal(int size) {
 		super(size);

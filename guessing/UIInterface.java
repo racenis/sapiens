@@ -1,3 +1,5 @@
+
+/// Base class for UI interfaces.
 class UIInterface {
 	public UIInterface(UIFormatterInterface formatter) {
 		this.formatter = formatter;
@@ -23,13 +25,20 @@ class UIInterface {
 	}
 	
 	/// Displays a message to the user.
+	/// This message will be formatted using FormatString() method.
 	public void PrintMessage(Text message, String[] params) {
 		String string = GetStringFromText(message);
-		if (params != null) string = FormatString(string, params);
+		string = FormatString(string, params);
 		formatter.Display(string);
 	}
 
+	/// Formats a string by inserting in parameters.
+	/// @example If passing in "p1: %0, p2: %1" as string and ["a", "b"] as 
+	///          params, then "p1: a, p2: b" will be returned.
+	/// @param params Either a string array of strings to be inserted into
+	///               string, or a null.
 	protected String FormatString(String string, String[] params) {
+		if (params == null) return string;
 		for (int i = 0; i < params.length; i++) {
 			string = string.replace("%" + i, params[i]);
 		}

@@ -1,5 +1,7 @@
 import java.util.Scanner;
 
+/// Doesn't actually format anything.
+/// This formatter just prints out text using the formatted interface.
 class UIFormatterBadCLI implements UIFormatterInterface {
 	
 	public char[] GetInput(String prompt) {

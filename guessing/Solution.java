@@ -1,8 +1,13 @@
+
+/// Solution to a game.
 class Solution {
 	public Solution(char[] characters) {
 		this.characters = characters;
 	}
 	
+	/// Validates the solution against a field.
+	/// @param field   Field against which the solution will be validated.
+	/// @param printer It will be used to print messages to the user.
 	public boolean Validate(FieldInterface field, UIInterface printer) {
 		
 		// check if only valid characters

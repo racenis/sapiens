@@ -1,3 +1,5 @@
+
+/// Field, but supports decimal numbers.
 class FieldDecimal implements FieldInterface {
 	
 	public FieldDecimal(int size) {

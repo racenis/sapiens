@@ -2,20 +2,63 @@
 
 +------------------------------------------------------------------------------+
 |                                                                              |
+|                                    notes                                     |
+|                                                                              |
++------------------------------------------------------------------------------+
+
+Business case: who knows? definitely not very obvious.
+
+User: someone who likes boring guessing games.
+
+I feel like a GUI would work better than a CLI, considering the type of person
+who would probably be intereseted in this kind of software.
+
+Anyway, you can implement a GUI by subclassing the UIInterface class and
+replacing the relevant methods. I think you should be able to get it working
+without needing to modify any other part of the program code.
+
+The requirements stated that the program needs to generate numbers with digits.
+It did not say which base the numbers should be in. I implemented decimal
+digits and hexadecimal digits, but more digits could be added by subclassing the
+FieldInterface interface.
+
+You could also have the program generate words to essentially make a Wordle
+clone. That could be done by implementing the RandomCharacterGeneratorInterface
+interface. Guessing words would be easier and probably more fun than guessing 
+numbers. It is supposed to be game, is it not?
+
+The requirements also specified the message format. It is very difficult to
+understand. I added a bettwe format. By default the program will use the
+difficult format, the better one can be toggled by a CLI flag.
+
+This interface system also allows the localization of the program. CLI programs
+usually are not localized, but it still would be possible to do so by
+subclassing the UIInterface class.
+
+The example in the specification also showed that the CLI should display the
+secret number. The game is about guessing the secret number. Showing the secret
+number would make it not secret. This behavior can be toggled by a CLI flag.
+
+However hiding the secret number makes it very difficult to guess it,
+especially since the number has 4 digits and there are only 8 allowed attempts.
+This default behavior can be changed by using a CLI option.
+
++------------------------------------------------------------------------------+
+|                                                                              |
 |                                    ideas                                     |
 |                                                                              |
 +------------------------------------------------------------------------------+
 
 Use a more functional programming style
-- code very imperative style for implementing algorithms
+- code uses very imperative style for implementing algorithms
 - more functional style could be more readable
 
 Implement other counting systems
 - currently we only have decimal and hexadecimal
 
-Add dictionary generator
+Add a dictionary generator
 - instead of picking a random character, it would instead pick a random word
-  from a provided dictionary and then sequentially give otu letters from it
+  from a provided dictionary and then sequentially give out letters from it
 - we could basically make a wordle
 
 Replace CLI with GUI
@@ -26,13 +69,31 @@ Replace CLI UI with networked UI
 - constructor opens socket
 - provide REST API through socket
 - structure inputs and outputs as JSON
-- would allow commercializing as Worlde As A Service (WAAS)
+- would allow commercializing program as Wordle As A Service (WAAS)
 
 Characters as a class
 - characters are currently using builtin char type
 - maybe we want pictograms? non-unicode characters?
 - put them in class with a isEqual() method
 
+Consider adding a configManager class
+- contains ConfigOption class instances
+- allows to simplify the logic in the main method
+- also allows easy config saving to file and loading
+
+Check Java standard library docs for containers
+- use a proper dynamic array implemenation
+- re-allocating arrays to re-size them is inefficient
+- program is so simple that it is unlikely to be a performance issue
+- mostly not good because code is hard to read
+
++------------------------------------------------------------------------------+
+|                                                                              |
+|                                implementation                                |
+|                                                                              |
++------------------------------------------------------------------------------+
+
+here it is:
 
 */
 
@@ -74,16 +135,9 @@ class MainClass {
 		}
 	}
 	
-	
-	
-	
-
 	public static void main(String args[]) {
 		
 		// setting up default settings
-		
-		boolean fixed = false;
-		char fixed_char = '0';
 		
 		boolean fancy = false;
 		boolean alt_language = false;
@@ -151,22 +205,28 @@ class MainClass {
 		// starting the game
 		
 		for (int current_guess = 0; current_guess < allowed_guesses; current_guess++) {
+			
+			// print out the number of the guess
 			int one_based_guess_number = current_guess + 1;
 			String[] params = {Integer.toString(one_based_guess_number),
 			                   Integer.toString(allowed_guesses)};
 			ui.PrintMessage(UIInterface.Text.PROGRESS_REPORT, params);
 			
+			// print out the secret number
 			if (allow_cheat) {
 				String[] solution_strs = {field.toString()};
 				ui.PrintMessage(UIInterface.Text.SHOW_CORRECT, solution_strs);
 			}
 			
+			// prompt user for solution
 			Solution solution = new Solution(ui.GetInput(UIInterface.Text.PROMPT_SOLUTION));
 			
+			// check if solution is correct
 			if (solution.Validate(field, ui)) {
 				ui.PrintMessage(UIInterface.Text.SOLUTION_CORRECT, null);
 				return;
 			}
+			
 		}
 		
 		ui.PrintMessage(UIInterface.Text.ABSOLUTE_FAILURE, null);

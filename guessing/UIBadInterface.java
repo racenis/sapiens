@@ -1,3 +1,5 @@
+
+/// Implements formatting as shown in the requirement example.
 class UIBadInterface extends UIInterface {
 	public UIBadInterface(UIFormatterInterface formatter) {
 		super(formatter);

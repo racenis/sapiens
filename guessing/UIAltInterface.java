@@ -1,8 +1,11 @@
+
+/// Implements an alternative language interface.
 class UIAltInterface extends UIInterface {
 	public UIAltInterface(UIFormatterInterface formatter) {
 		super(formatter);
 	}
 	
+	// NOTE: translation is incorrect. this is intentional. do not fix.
 	protected String GetStringFromText(Text text) {
 		switch (text) {
 			case HELP_MESSAGE: 		return "Paliidziiba: http://google.com";
