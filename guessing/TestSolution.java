@@ -39,19 +39,6 @@ class PrinterMock extends UIInterface {
 		super(null);
 	}
 	
-	/*public enum Text {
-		HELP_MESSAGE,
-		PROMPT_SOLUTION,
-		PROGRESS_REPORT,
-		SOLUTION_CORRECT,
-		ABSOLUTE_FAILURE,
-		INVALID_SYMBOLS,
-		INVALID_LENGTH,
-		CORRECT_SYMBOLS,
-		CORRECT_PLACES,
-		SHOW_CORRECT,
-	};*/
-	
 	public char[] GetInput(Text prompt) {
 		return null; // won't need this
 	}
@@ -103,18 +90,10 @@ public class TestSolution {
 		// first we will try a completely correct solution.
 		char[] characters = {'A', 'F', '0', '9'};
 		
-		//CharMock generator = new CharMock();
-		//generator.SetChars(characters);
-		
 		Solution solution = new Solution(characters);
 		
-		//FieldMock field = new FieldMock();
 		FieldMock field = new FieldMock();
 		PrinterMock printer = new PrinterMock();
-		
-		//for (int i = 0; i < characters.length; i++) {
-		//	solution.Insert(i, generator);
-		//}
 		
 		assert(solution.Validate(field, printer));
 		

@@ -3,8 +3,6 @@
 -- Like any number?
 -- As in parties that have at least a single policy referencing them?
 
-
-
 select * from party								-- 1. we take all parties
 	inner join policy 							-- 2. attach their policies and discard
 		on party.party_id = policy.policy_id	--    those that don't have any policies

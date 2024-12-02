@@ -1,7 +1,7 @@
 --Select all policies that start before 14.11.2019
 
 -- Which database are we even dealing with? There's lots of differences between
--- different databases, i.e. MySQL and that not very good microsoft database.
+-- different databases, e.g. MySQL and that not very good microsoft database.
 
 -- Essentially each vendor has their own unique SQL dialect.
 -- Also the example doesn't give the full database schema, i.e. the types of the

@@ -13,3 +13,12 @@
 
 select * from policy where start_date < date('2019-10-14')
 					and expiration_date > date('2019-11-14');
+					
+-- But this will not retrieve policies that started or ended during the period.
+
+-- This is another approach, it should include those policies too:
+select * from policy where not ((start_date < date('2019-10-14')
+                                and expiration_date < date('2019-10-14'))
+                            or
+							    (start_date > date('2019-11-14')
+							     and expiration_date > date('2019-11-14')));

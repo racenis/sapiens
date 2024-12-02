@@ -432,7 +432,7 @@ public:
 	}
 	
 	~GenericStakeholder() override {
-		if (name) delete name;
+		if (name) delete[] name;
 	}
 private:
 	char* name = nullptr;
@@ -500,10 +500,11 @@ int main(int argc, const char** argv) {
 	
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "--help") == 0) {
-			printf("Usage: responsibility sum\n");
+			printf("Usage: responsibility sum [-default currency]\n");
 			printf("\tsum is the sum which will be checked for approval\n");
+			printf("\tcurrency is the default currency\n");
 			printf("Accepted currencies:\n");
-			printf("\t$, USD, AUD, CAD, NZL, EUR, SWL, Z$, A$\n");
+			printf("\t$, USD, AUD, CAD, NZL, EUR, ZWL, Z$, A$\n");
 			printf("Example:\n");
 			printf("\tresponsibility 400$");
 			return 0;
