@@ -4,7 +4,7 @@ class FieldMock implements FieldInterface {
 	}
 	
 	public boolean Contains(char character) {
-		return character != 'P'; // no p!!!
+		return character != 'P' && character != 'S' ; // no p!!! or s!!!!
 	}
 	
 	public void Insert(int index, RandomCharacterGeneratorInterface generator) {
@@ -57,7 +57,9 @@ class PrinterMock extends UIInterface {
 	}
 	
 	public void PrintMessage(Text message, String[] params) {
-		System.out.println("accesising");
+		System.out.print("PrinterMock: " + message.name());
+		if (params != null) for (String p : params) System.out.print(' ' + p);
+		System.out.println("");
 		
 		switch (message) {
 			case INVALID_SYMBOLS:
@@ -114,7 +116,7 @@ public class TestSolution {
 	
 	public static void main(String args[]) {
 		
-		
+		// first we will try a completely correct solution.
 		char[] characters = {'A', 'F', '0', '9'};
 		
 		//CharMock generator = new CharMock();
@@ -130,11 +132,97 @@ public class TestSolution {
 		//	solution.Insert(i, generator);
 		//}
 		
-		solution.Validate(field, printer);
+		assert(solution.Validate(field, printer));
 		
-		// make solution
-		// test stuff
+		assert(printer.exist_printed);
+		assert(printer.correct_printed);
+		assert(!printer.invalid_symbol_printed);
+		assert(!printer.invalid_length_printed);
 		
-		// use UI mock
+		assert(printer.exist[0].equals("4"));
+		assert(printer.exist[1].equals("4"));
+		
+		assert(printer.correct[0].equals("4"));
+		assert(printer.correct[1].equals("4"));
+		
+		
+		
+		// okay let's try a big wronger solution
+		characters = new char[]{'F', 'A', '0', '9'};
+		
+		solution = new Solution(characters);
+		
+		field = new FieldMock();
+		printer = new PrinterMock();
+		
+		assert(!solution.Validate(field, printer));
+		
+		assert(printer.exist_printed);
+		assert(printer.correct_printed);
+		assert(!printer.invalid_symbol_printed);
+		assert(!printer.invalid_length_printed);
+		
+		assert(printer.exist[0].equals("4"));
+		assert(printer.exist[1].equals("4"));
+		
+		// swapped F and A, so only 2 should be correct now
+		assert(printer.correct[0].equals("2"));
+		assert(printer.correct[1].equals("4"));
+		
+		
+		
+		// this time we will do a completely incorrect solution
+		characters = new char[]{'S', 'S', 'S', 'S'};
+		
+		solution = new Solution(characters);
+		
+		field = new FieldMock();
+		printer = new PrinterMock();
+		
+		assert(!solution.Validate(field, printer));
+		
+		assert(printer.exist_printed);
+		assert(printer.correct_printed);
+		assert(!printer.invalid_symbol_printed);
+		assert(!printer.invalid_length_printed);
+		
+		assert(printer.exist[0].equals("0"));
+		assert(printer.exist[1].equals("4"));
+
+		assert(printer.correct[0].equals("0"));
+		assert(printer.correct[1].equals("4"));
+		
+		
+		
+		// now let's try an illegal solution
+		characters = new char[]{'4', '5', '1'};
+		
+		solution = new Solution(characters);
+		
+		field = new FieldMock();
+		printer = new PrinterMock();
+		
+		assert(!solution.Validate(field, printer));
+		
+		assert(!printer.invalid_symbol_printed);
+		assert(printer.invalid_length_printed);
+		
+		
+		
+		// finally we can try to use the illegal character: P
+		characters = new char[]{'P', '4', '5', '1'};
+		
+		solution = new Solution(characters);
+		
+		field = new FieldMock();
+		printer = new PrinterMock();
+		
+		assert(!solution.Validate(field, printer));
+		
+		assert(printer.invalid_symbol_printed);
+		assert(!printer.invalid_length_printed);
+		
+		
+		System.out.println("Ok, we are done.");
 	}
 }
