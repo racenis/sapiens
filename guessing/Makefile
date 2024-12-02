@@ -7,6 +7,10 @@ good: compile
 fancy: compile
 	java -ea MainClass -good -hex -fancy
 
+test2: compile
+	javac TestSolution.java
+	java -ea TestSolution
+	
 compile:	MainClass.class FieldDecimal.class FieldHexadecimal.java \
 			RandomCharacterFromSet.class RandomCharacterRandom.class \
 			UIInterface.class UIAltInterface.class UIBadInterface.class \

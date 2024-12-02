@@ -523,6 +523,9 @@ int main(int argc, const char** argv) {
 		printf("Get help: resp --help\n");
 		return 1;
 	}
+
+	// intentionally not catching exceptions, instead letting the program crash.
+	// we'll get an error message anyway
 	
 	Currency* cost = CurrencyFactory::ConvertToDefaultCurrency(cost_in_any_currency);
 
