@@ -97,23 +97,7 @@ class PrinterMock extends UIInterface {
 	public boolean invalid_length_printed = false;
 };
 
-public class TestSolution {
-	class CharMock implements RandomCharacterGeneratorInterface {
-		public char GetCharacter() {
-			return chars[index++];
-		}
-		
-		public void SetChars(char[] chars) {
-			this.chars = chars;
-			this.index = 0;
-		}
-		
-		private static char[] chars = {};
-		private static int index = 0;
-	};
-	
-	
-	
+public class TestSolution {	
 	public static void main(String args[]) {
 		
 		// first we will try a completely correct solution.

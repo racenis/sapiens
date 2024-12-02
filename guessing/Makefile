@@ -7,6 +7,10 @@ good: compile
 fancy: compile
 	java -ea MainClass -good -hex -fancy
 
+test1: compile
+	javac TestField.java
+	java -ea TestField
+	
 test2: compile
 	javac TestSolution.java
 	java -ea TestSolution
