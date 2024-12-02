@@ -47,19 +47,26 @@ public class TestUI {
 		
 		UIInterface delanged = new UIDelanged(formatted);
 		
-		// let's start with acking for some inputs
+		// let's start with asking for some inputs
 		char[] inpu = delanged.GetInput(UIInterface.Text.PROMPT_SOLUTION);
 		
 		assert(inpu.length == 1);
 		assert(inpu[0] == 'F');
 		assert(formatted.last_display.equals("PROMPT_SOLUTION"));
 		
+		// after that we could check that nulls work correctly
+		delanged.PrintMessage(UIInterface.Text.ABSOLUTE_FAILURE, null);
+		assert(formatted.last_display.equals("ABSOLUTE_FAILURE"));
 		
+		// and that uninputted strings don't get replaced
+		delanged.PrintMessage(UIInterface.Text.SOLUTION_CORRECT, null);
+		assert(formatted.last_display.equals("SOLUTION_CORRECT%0%1%2"));
 		
+		// and that uninputted strings don't get replaced
+		String[] prawns = {"a", "1"};
+		delanged.PrintMessage(UIInterface.Text.CORRECT_SYMBOLS, prawns);
+		assert(formatted.last_display.equals("CORRECT_SYMBOLSa:1"));
 		
-		// subclass UIInterface
-		// override some strings
-		// use storage formatter mock
-		// check what prints!!
+		System.out.println("Done!");
 	}
 }

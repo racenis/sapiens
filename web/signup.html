@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    <link rel="canonical" href="https://getbootstrap.com/docs/3.3/examples/signin/">
+
+    <title>Register</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://getbootstrap.com/docs/3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="https://getbootstrap.com/docs/3.3/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="signin.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+	<style>
+	
+	/*
+		The requirements said that I need to implement signup.html, not
+		signup.css, so I will put this here.
+	*/
+	
+	.top-control {
+		margin-bottom: -1px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+	
+	.mid-control, #inputPassword {
+		border-radius: 0;
+		margin-bottom: -1px;
+	}
+	
+	.btm-control {
+		margin-bottom: 10px;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+	
+	
+	</style>
+	
+	
+	
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <form class="form-signin">
+        <h2 class="form-signin-heading">Fill in the data</h2>
+		
+		<!--
+			Btw I read that you shouldn't ask first name and last name
+			seperately, since that confuses people with multiple names or just a
+			single name.
+			
+			You should just ask for a name and maybe a preferred name.
+			
+			Also why is "Name" capitalised in the example? "Password confirm"
+			isn't.
+		-->
+		
+        <label for="inputFirstName" class="sr-only">First Name</label>
+        <input type="text" id="inputFirstName" class="form-control top-control" placeholder="First Name" required autofocus>
+		<label for="inputLastName" class="sr-only">Last Name</label>
+        <input type="text" id="inputLastName" class="form-control mid-control" placeholder="Last Name" required>
+		
+		<label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control mid-control" placeholder="Password" required>
+		<label for="inputPasswordConfirm" class="sr-only">Password confirm</label>
+        <input type="password" id="inputPasswordConfirm" class="form-control" placeholder="Password confirm" required>
+		
+		
+		<label for="inputStreet" class="sr-only">Street</label>
+        <input type="text" id="inputStreet" class="form-control top-control" placeholder="Street" required>
+		<label for="inputCity" class="sr-only">City</label>
+        <input type="text" id="inputCity" class="form-control mid-control" placeholder="City" required>
+		
+		<label for="inputCountry" class="sr-only">Country</label>
+		<select id="inputCountry" class="form-control mid-control" required>
+			<option value="" disabled selected>Country</option>
+			<option value="ah">Austria-Hungary</option>
+			<option value="cz">Czechoslovakia</option>
+			<option value="gdr">German Democratic Republic</option>
+			<option value="plc">Polish-Lithuanian Commonwealth</option>
+			<option value="rh">Rhodesia</option>
+		</select>
+		
+		<label for="inputPostcode" class="sr-only">Postcode</label>
+        <input type="text" id="inputPostcode" class="form-control btm-control" placeholder="Postcode" required>
+		
+		
+		
+		
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="accept-terms"> Accept terms and conditions
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+      </form>
+	  
+    </div> <!-- /container -->
+
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
