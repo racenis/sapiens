@@ -15,6 +15,10 @@ test2: compile
 	javac TestSolution.java
 	java -ea TestSolution
 	
+test3: compile
+	javac TestUI.java
+	java -ea TestUI
+	
 compile:	MainClass.class FieldDecimal.class FieldHexadecimal.java \
 			RandomCharacterFromSet.class RandomCharacterRandom.class \
 			UIInterface.class UIAltInterface.class UIBadInterface.class \
